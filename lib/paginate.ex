@@ -45,6 +45,14 @@ defmodule Paginate do
     page_size: @default_page_size
   }
 
+  def cursor_query(queryable, opts, defaults \\ @defaults) do
+    query(queryable, :cursor, opts, defaults)
+  end
+
+  def offset_query(queryable, opts, defaults \\ @defaults) do
+    query(queryable, :offset, opts, defaults)
+  end
+
   @doc """
   Builds a paginated `Ecto.Query` from `queryable` using the given
   pagination strategy.
@@ -230,10 +238,10 @@ defmodule Paginate do
       #=> %{data: [...], meta: %{page: 2, page_size: 50, total: 1234}}
 
   """
-  def build_page_result(data, pagination_type, page_opts)
+  def build_page_result(data, pagination_type, page_opts, defaults \\ @defaults)
 
-  def build_page_result(data, :cursor, page_opts) do
-    %{cursor_field: cursor_field, page_size: page_size} = page_opts
+  def build_page_result(data, :cursor, page_opts, defaults) do
+    %{cursor_field: cursor_field, page_size: page_size} = Enum.into(page_opts, defaults)
 
     {page, peek} = Enum.split(data, page_size)
 
@@ -254,7 +262,9 @@ defmodule Paginate do
     }
   end
 
-  def build_page_result(data, :offset, page_opts) do
+  def build_page_result(data, :offset, page_opts, defaults) do
+    page_opts = Enum.into(page_opts, defaults)
+
     %{
       data: data,
       meta:
