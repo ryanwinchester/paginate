@@ -1,13 +1,21 @@
 defmodule Paginate.MixProject do
   use Mix.Project
 
+  @version "0.1.0"
+  @source_url "https://github.com/ryanwinchester/paginate"
+
   def project do
     [
       app: :paginate,
-      version: "0.1.0",
-      elixir: "~> 1.19",
+      version: @version,
+      elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      description: "Cursor-based and offset-based pagination helpers for Ecto queries.",
+      package: package(),
+      docs: docs(),
+      name: "Paginate",
+      source_url: @source_url
     ]
   end
 
@@ -21,8 +29,24 @@ defmodule Paginate.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+      {:ecto, "~> 3.0"},
+      {:ex_doc, "~> 0.34", only: :dev, runtime: false}
+    ]
+  end
+
+  defp package do
+    [
+      licenses: ["Apache-2.0"],
+      links: %{"GitHub" => @source_url},
+      files: ~w(lib mix.exs README.md LICENSE .formatter.exs)
+    ]
+  end
+
+  defp docs do
+    [
+      main: "readme",
+      extras: ["README.md"],
+      source_ref: "v#{@version}"
     ]
   end
 end
